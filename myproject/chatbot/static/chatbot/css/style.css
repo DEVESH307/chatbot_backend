@@ -219,8 +219,8 @@
   position: absolute;
   bottom: 20px;
   right: 20px;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
@@ -228,7 +228,7 @@
   cursor: pointer;
   border-radius: 50%;
   transition: background-color 0.3s ease;
-  margin-bottom: 50px;
+  margin-bottom: 45px;
 }
 
 .chatbot-container .chat-container .scroll-down:hover {
