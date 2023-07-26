@@ -169,6 +169,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const isActiveCard = clickedMessage.classList.toggle("active-card");
 
     if (isActiveCard) {
+      // Hide other card messages
+      cardMessages.forEach((message) => {
+        if (message !== clickedMessage && message.classList.contains("card-message")) {
+          message.style.display = "none";
+        }
+      });
+
       // Move the clicked card to the bottom
       chatLog.appendChild(clickedMessage);
 
@@ -214,15 +221,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
       hideLoader(); // Hide the loader after bot response
 
-      // Re-enable click event on all card messages except the selected one
+      disabledCards.push(clickedMessage);
+    } else {
+      // Show all card messages again
       cardMessages.forEach((message) => {
-        if (message !== clickedMessage) {
-          message.style.pointerEvents = "auto";
+        if (message.classList.contains("card-message")) {
+          message.style.display = "block";
         }
       });
 
-      disabledCards.push(clickedMessage);
-    } else {
       clickedMessage.classList.remove("user-message"); // Remove "user-message" class when the card is deselected
       clickedMessage.classList.add("bot-message", "card-message");
 
