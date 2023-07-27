@@ -228,7 +228,7 @@
   cursor: pointer;
   border-radius: 50%;
   transition: background-color 0.3s ease;
-  margin-bottom: 45px;
+  margin-bottom: 40px;
 }
 
 .chatbot-container .chat-container .scroll-down:hover {

@@ -142,6 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function showCardOptions() {
     addCardMessage("Payment Status", "The payment status is pending.");
     addCardMessage("Payment History", "Here is your payment history.");
+    addCardMessage("Password Help", "Here is your Password Help link.");
     addCardMessage("Others", "Please provide more details about your inquiry.");
   }
 
