@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to handle user input change
   function handleInputChange() {
-    sendBtn.disabled = userInput.value.trim() === "" || isMessageBeingSent;
+    sendBtn.disabled = userInput.value.trim() === "" || isMessageBeingSent || loader.hidden === false;
     adjustTextareaHeight();
   }
 
@@ -141,15 +141,15 @@ document.addEventListener("DOMContentLoaded", function () {
   async function showCardOptions() {
     const response = await fetch('/chatbot/bot-reply/'); // Assuming the endpoint for bot reply is '/chatbot/bot-reply/'
     const data = await response.json();
-
+  
     if (data.bot_reply === "I'm sorry, I'm unable to understand. Please select from the given options.") {
-      const parentCardsContent = data.parent_cards_content;
-      parentCardsContent.forEach((content) => {
-        addCardMessage(content, `Here is your ${content.toLowerCase()}.`);
+      const parentCards = data.parent_data;
+      parentCards.forEach((card) => {
+        addCardMessage(card.content, `Here is your ${card.content.toLowerCase()}.`);
       });
     }
   }
-
+  
   // Function to add a card message to the chat log
   function addCardMessage(cardMessage, botReply) {
     const messageElement = createDOMElement("div", ["message", "bot-message", "card-message"]);
@@ -261,7 +261,8 @@ document.addEventListener("DOMContentLoaded", function () {
     sendBtn.disabled =
       userInput.value.trim() === "" ||
       isMessageBeingSent ||
-      chatLog.getElementsByClassName("active-card").length > 0;
+      chatLog.getElementsByClassName("active-card").length > 0 ||
+      loader.hidden === false;
   }
 
   // Function to add a message to the chat log
@@ -329,7 +330,7 @@ document.addEventListener("DOMContentLoaded", function () {
       userInput.placeholder = placeholder;
     }
 
-    sendBtn.disabled = userInput.value.trim() === "" || isMessageBeingSent;
+    sendBtn.disabled = userInput.value.trim() === "" || isMessageBeingSent || loader.hidden === false;
     userInput.addEventListener("keypress", handleKeyPress);
     isMessageBeingSent = false;
   }
