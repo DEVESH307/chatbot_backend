@@ -138,12 +138,16 @@ document.addEventListener("DOMContentLoaded", function () {
     chatLog.appendChild(messageElement);
   }
 
-  // Function to show the card options when needed
-  function showCardOptions() {
-    addCardMessage("Payment Status", "The payment status is pending.");
-    addCardMessage("Payment History", "Here is your payment history.");
-    addCardMessage("Password Help", "Here is your Password Help link.");
-    addCardMessage("Others", "Please provide more details about your inquiry.");
+  async function showCardOptions() {
+    const response = await fetch('/chatbot/bot-reply/'); // Assuming the endpoint for bot reply is '/chatbot/bot-reply/'
+    const data = await response.json();
+
+    if (data.bot_reply === "I'm sorry, I'm unable to understand. Please select from the given options.") {
+      const parentCardsContent = data.parent_cards_content;
+      parentCardsContent.forEach((content) => {
+        addCardMessage(content, `Here is your ${content.toLowerCase()}.`);
+      });
+    }
   }
 
   // Function to add a card message to the chat log
@@ -278,26 +282,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     chatLog.appendChild(messageElement);
   }
-
-  // Function to generate the bot reply
-  // async function generateBotReply() {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       const botReplies = [
-  //         // "Hello, how can I assist you today?",
-  //         // "Thank you for reaching out. How may I help?",
-  //         // "I'm here to answer your questions. What can I do for you?",
-  //         // "Please provide more details about your inquiry.",
-  //         "I apologize, but I don't have the information you're looking for.",
-  //         "I'm sorry, I'm unable to understand. Please select from the given options.", // Trigger text for card options
-  //       ];
-  //       const randomIndex = Math.floor(Math.random() * botReplies.length);
-  //       const botReply = botReplies[randomIndex];
-
-  //       resolve(botReply);
-  //     }, 1000);
-  //   });
-  // }
 
   // Function to generate the bot reply
   async function generateBotReply() {
