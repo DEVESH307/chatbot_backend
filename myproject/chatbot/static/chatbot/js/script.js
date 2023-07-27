@@ -284,10 +284,9 @@ document.addEventListener("DOMContentLoaded", function () {
     chatLog.appendChild(messageElement);
   }
 
-  // Function to generate the bot reply
-  async function generateBotReply() {
+  async function generateBotReply(userInput) {
     try {
-      const response = await fetch("/chatbot/bot-reply/");
+      const response = await fetch(`/chatbot/bot-reply/?user_input=${encodeURIComponent(userInput)}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -298,7 +297,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return "Error fetching bot reply.";
     }
   }
-
 
   // Function to send a message
   async function sendMessage() {
@@ -316,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
       showLoader();
       scrollToBottom();
 
-      const botReply = await generateBotReply();
+      const botReply = await generateBotReply(message);
       if (botReply) {
         addMessage(botReply, false);
         if (botReply.includes("I'm sorry, I'm unable to understand. Please select from the given options.")) {
