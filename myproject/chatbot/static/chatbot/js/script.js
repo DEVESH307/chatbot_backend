@@ -280,24 +280,40 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to generate the bot reply
-  async function generateBotReply() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const botReplies = [
-          // "Hello, how can I assist you today?",
-          // "Thank you for reaching out. How may I help?",
-          // "I'm here to answer your questions. What can I do for you?",
-          // "Please provide more details about your inquiry.",
-          "I apologize, but I don't have the information you're looking for.",
-          "I'm sorry, I'm unable to understand. Please select from the given options.", // Trigger text for card options
-        ];
-        const randomIndex = Math.floor(Math.random() * botReplies.length);
-        const botReply = botReplies[randomIndex];
+  // async function generateBotReply() {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => {
+  //       const botReplies = [
+  //         // "Hello, how can I assist you today?",
+  //         // "Thank you for reaching out. How may I help?",
+  //         // "I'm here to answer your questions. What can I do for you?",
+  //         // "Please provide more details about your inquiry.",
+  //         "I apologize, but I don't have the information you're looking for.",
+  //         "I'm sorry, I'm unable to understand. Please select from the given options.", // Trigger text for card options
+  //       ];
+  //       const randomIndex = Math.floor(Math.random() * botReplies.length);
+  //       const botReply = botReplies[randomIndex];
 
-        resolve(botReply);
-      }, 1000);
-    });
+  //       resolve(botReply);
+  //     }, 1000);
+  //   });
+  // }
+
+  // Function to generate the bot reply
+  async function generateBotReply() {
+    try {
+      const response = await fetch("/chatbot/bot-reply/");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      return data.bot_reply;
+    } catch (error) {
+      console.error("Error fetching bot reply:", error);
+      return "Error fetching bot reply.";
+    }
   }
+
 
   // Function to send a message
   async function sendMessage() {

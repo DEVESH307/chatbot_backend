@@ -58,6 +58,13 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+# Allow requests from your frontend domain (replace 'http://your-frontend-domain' with the actual domain)
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:8000',
+    # 'http://127.0.0.1:8000/chatbot',
+    # 'http://127.0.0.1:8000/chatbot/bot-reply',
+]
+
 ROOT_URLCONF = 'myproject.urls'
 
 TEMPLATES = [
