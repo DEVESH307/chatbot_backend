@@ -42,7 +42,7 @@ def get_bot_reply(request):
         user_input = request.GET.get('user_input', '').strip()
     
     bot_replies = [
-        "I apologize, but I don't have the information you're looking for.",
+        # "I apologize, but I don't have the information you're looking for.",
         "I'm sorry, I'm unable to understand. Please select from the given options.",
         # Add more bot replies here...
     ]

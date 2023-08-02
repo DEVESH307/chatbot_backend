@@ -151,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
   //     });
   //   }
   // }
+
   async function showCardOptions(userInput) {
     const response = await fetch(`/chatbot/bot-reply/?user_input=${encodeURIComponent(userInput)}`);
     const data = await response.json();
@@ -168,6 +169,28 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   }
+
+  // async function showCardOptions(userInput) {
+  //   try {
+  //     const data = await generateBotReply(userInput);
+  
+  //     // if (data.bot_reply === "I'm sorry, I'm unable to understand. Please select from the given options.") {
+  //     if (data.parent_data) {
+  //       const parentCards = data.parent_data;
+  //       parentCards.forEach((card) => {
+  //         addCardMessage(card.content, `Here is your ${card.content.toLowerCase()}.`);
+  //       });
+  //     } else if (data.related_cards) {
+  //       const relatedCards = data.related_cards;
+  //       relatedCards.forEach((card) => {
+  //         addCardMessage(card.content, `Related card: ${card.content}`);
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error showing card options:", error);
+  //     // Handle the error in a specific way, if needed
+  //   }
+  // }  
   
   // Function to add a card message to the chat log
   function addCardMessage(cardMessage, botReply) {
@@ -220,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
       clickedMessage.appendChild(userAvatarElement);
       
       clickedCardMessage = clickedMessage.querySelector('.text-wrapper').textContent;
-      console.log('Clicked Card Message (active):', clickedCardMessage); // Log the value when the card is active
+      // console.log('Clicked Card Message (active):', clickedCardMessage); // Log the value when the card is active
 
       scrollToBottom(); // Scroll to bottom before bot response
 
@@ -278,8 +301,8 @@ document.addEventListener("DOMContentLoaded", function () {
         disabledCards.splice(index, 1);
       }
 
-      clickedMessage = '';
-      console.log('Clicked Card Message (not active):', clickedCardMessage); // Log the value when the card is not active
+      clickedCardMessage = '';
+      // console.log('Clicked Card Message (not active):', clickedCardMessage); // Log the value when the card is not active
 
     }
 
@@ -360,24 +383,73 @@ document.addEventListener("DOMContentLoaded", function () {
   //   isMessageBeingSent = false;
   // }
   
+  // async function sendMessage() {
+  //   if (isMessageBeingSent) return;
+  
+  //   isMessageBeingSent = true;
+  //   userInput.removeEventListener('keypress', handleKeyPress);
+  //   sendBtn.disabled = true;
+  //   const message = userInput.value.trim();
+  
+  //   // Check if there is an active card (clickedCardMessage has priority)
+  //   const userMessage = clickedCardMessage !== '' ? clickedCardMessage : message;
+  
+  //   if (userMessage !== '') {
+  //     addMessage(userMessage, true);
+  //     userInput.value = '';
+  //     userInput.style.height = originalHeight;
+  //     showLoader();
+  //     scrollToBottom();
+  
+  //     const botReply = await generateBotReply(userMessage);
+  //     if (botReply) {
+  //       addMessage(botReply, false);
+  //       if (botReply.includes("I'm sorry, I'm unable to understand. Please select from the given options.")) {
+  //         showCardOptions(userMessage); // Pass the userMessage as input to showCardOptions
+  //       }
+  //       hideLoader();
+  //     }
+  
+  //     scrollToBottom();
+  //   } else {
+  //     userInput.placeholder = placeholder;
+  //     // Handle the case when there is no user input or clickedCardMessage
+  //     // For example, you can show an error message or handle it in a specific way
+  //   }
+  
+  //   sendBtn.disabled =
+  //     userInput.value.trim() === '' ||
+  //     isMessageBeingSent ||
+  //     chatLog.getElementsByClassName('active-card').length > 0 ||
+  //     loader.hidden === false;
+  //   userInput.addEventListener('keypress', handleKeyPress);
+  //   isMessageBeingSent = false;
+  // }
+  
+  // Function to send a message
   async function sendMessage() {
     if (isMessageBeingSent) return;
-  
+
     isMessageBeingSent = true;
-    userInput.removeEventListener('keypress', handleKeyPress);
+    userInput.removeEventListener("keypress", handleKeyPress);
     sendBtn.disabled = true;
     const message = userInput.value.trim();
-  
+
+    // Reset the clickedCardMessage when sending a new text message
+    if (message !== '') {
+      clickedCardMessage = '';
+    }
+
     // Check if there is an active card (clickedCardMessage has priority)
     const userMessage = clickedCardMessage !== '' ? clickedCardMessage : message;
-  
+
     if (userMessage !== '') {
       addMessage(userMessage, true);
       userInput.value = '';
       userInput.style.height = originalHeight;
       showLoader();
       scrollToBottom();
-  
+
       const botReply = await generateBotReply(userMessage);
       if (botReply) {
         addMessage(botReply, false);
@@ -386,14 +458,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         hideLoader();
       }
-  
+
       scrollToBottom();
     } else {
       userInput.placeholder = placeholder;
       // Handle the case when there is no user input or clickedCardMessage
       // For example, you can show an error message or handle it in a specific way
     }
-  
+
     sendBtn.disabled =
       userInput.value.trim() === '' ||
       isMessageBeingSent ||
@@ -402,7 +474,7 @@ document.addEventListener("DOMContentLoaded", function () {
     userInput.addEventListener('keypress', handleKeyPress);
     isMessageBeingSent = false;
   }
-  
+
   // Function to initialize event listeners
   function initEventListeners() {
     sendBtn.addEventListener("click", sendMessage);
@@ -426,5 +498,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   // Initialize the chat
   initializeChat();
-  console.log('Clicked Card Message:', clickedCardMessage);
+  // console.log('Clicked Card Message:', clickedCardMessage);
 });
