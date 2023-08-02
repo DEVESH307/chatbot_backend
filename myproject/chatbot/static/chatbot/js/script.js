@@ -138,14 +138,31 @@ document.addEventListener("DOMContentLoaded", function () {
     chatLog.appendChild(messageElement);
   }
 
-  async function showCardOptions() {
-    const response = await fetch('/chatbot/bot-reply/'); // Assuming the endpoint for bot reply is '/chatbot/bot-reply/'
+  // async function showCardOptions() {
+  //   const response = await fetch('/chatbot/bot-reply/'); // Assuming the endpoint for bot reply is '/chatbot/bot-reply/'
+  //   const data = await response.json();
+  
+  //   if (data.bot_reply === "I'm sorry, I'm unable to understand. Please select from the given options.") {
+  //     const parentCards = data.parent_data;
+  //     parentCards.forEach((card) => {
+  //       addCardMessage(card.content, `Here is your ${card.content.toLowerCase()}.`);
+  //     });
+  //   }
+  // }
+  async function showCardOptions(userInput) {
+    const response = await fetch(`/chatbot/bot-reply/?user_input=${encodeURIComponent(userInput)}`);
     const data = await response.json();
   
-    if (data.bot_reply === "I'm sorry, I'm unable to understand. Please select from the given options.") {
+    // if (data.bot_reply === "I'm sorry, I'm unable to understand. Please select from the given options.") {
+    if (data.parent_data) {
       const parentCards = data.parent_data;
       parentCards.forEach((card) => {
         addCardMessage(card.content, `Here is your ${card.content.toLowerCase()}.`);
+      });
+    } else if (data.related_cards) {
+      const relatedCards = data.related_cards;
+      relatedCards.forEach((card) => {
+        addCardMessage(card.content, `Related card: ${card.content}`);
       });
     }
   }
@@ -284,6 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chatLog.appendChild(messageElement);
   }
 
+  // Function to generate bot reply
   async function generateBotReply(userInput) {
     try {
       const response = await fetch(`/chatbot/bot-reply/?user_input=${encodeURIComponent(userInput)}`);

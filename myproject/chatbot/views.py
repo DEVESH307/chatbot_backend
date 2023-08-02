@@ -60,13 +60,21 @@ def get_bot_reply(request):
         # Add more bot replies here...
     ]
 
-    bot_reply = random.choice(bot_replies)+user_input
+    bot_reply = random.choice(bot_replies)
+
+    cards_data = load_cards_data()  # Assuming you have a function to load cards_data
+    card_content = [card['content'] for card in cards_data['Card']]
 
     if bot_reply == "I'm sorry, I'm unable to understand. Please select from the given options.":
-        cards_data = load_cards_data()  # Assuming you have a function to load cards_data
         parent_data = get_parent_data(cards_data)
         return JsonResponse({'bot_reply': bot_reply, 'parent_data': parent_data, 'user_input': user_input})
+    elif user_input in card_content:
+        cards_data = load_cards_data()
+        for card in cards_data:
+            if user_input == card['content']:
+                card_option = card['Option']
+                related_cards = get_related_cards(cards_data, card_option)
+                return JsonResponse({'bot_reply': bot_reply, 'related_cards': related_cards, 'user_input': user_input})
     else:
         return JsonResponse({'bot_reply': bot_reply, 'user_input': user_input})
-
 
