@@ -5,7 +5,6 @@ from django.http import JsonResponse, HttpResponse
 import random
 
 
-
 # Create your views here.
 def chatbot_view(request):
     return render(request, 'chatbot/index.html')
@@ -56,16 +55,14 @@ def get_bot_reply(request):
         parent_data = get_parent_data(cards_data)
         return JsonResponse({'bot_reply': bot_reply, 'parent_data': parent_data, 'user_input': user_input})
     elif user_input in card_contents:
-        card_id = None
+        card_option = None
         for card in cards_data['Card']:
             if user_input == card['user']:
-                card_id = card['id']
+                card_option = card['id']
                 break
 
-        if card_id is not None:
-            related_cards = get_related_cards(cards_data, card_id)
+        if card_option is not None:
+            related_cards = get_related_cards(cards_data, card_option)
             return JsonResponse({'bot_reply': bot_reply, 'related_cards': related_cards, 'user_input': user_input})
     else:
         return JsonResponse({'bot_reply': bot_reply, 'user_input': user_input})
-
-
