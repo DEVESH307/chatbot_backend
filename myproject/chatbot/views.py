@@ -27,12 +27,12 @@ def get_related_cards(cards_data, option):
     related_options = []
     related_entries = []
     for card in cards_data['Card']:
-        if card['Option'] == option:
-            related_options = card['related options']
+        if card['id'] == option:
+            related_options = card['related_options']
             break
 
     for card in cards_data['Card']:
-        if card['Option'] in related_options:
+        if card['id'] in related_options:
             related_entries.append(card)
 
     return related_entries
@@ -50,20 +50,20 @@ def get_bot_reply(request):
     bot_reply = random.choice(bot_replies)
 
     cards_data = load_cards_data()
-    card_contents = [card['content'] for card in cards_data['Card']]
+    card_contents = [card['user'] for card in cards_data['Card']]
 
     if bot_reply == "I'm sorry, I'm unable to understand. Please select from the given options.":
         parent_data = get_parent_data(cards_data)
         return JsonResponse({'bot_reply': bot_reply, 'parent_data': parent_data, 'user_input': user_input})
     elif user_input in card_contents:
-        card_option = None
+        card_id = None
         for card in cards_data['Card']:
-            if user_input == card['content']:
-                card_option = card['Option']
+            if user_input == card['user']:
+                card_id = card['id']
                 break
 
-        if card_option is not None:
-            related_cards = get_related_cards(cards_data, card_option)
+        if card_id is not None:
+            related_cards = get_related_cards(cards_data, card_id)
             return JsonResponse({'bot_reply': bot_reply, 'related_cards': related_cards, 'user_input': user_input})
     else:
         return JsonResponse({'bot_reply': bot_reply, 'user_input': user_input})

@@ -150,12 +150,12 @@ document.addEventListener("DOMContentLoaded", function () {
       if (data.parent_data) {
         const parentCards = data.parent_data;
         parentCards.forEach((card) => {
-          addCardMessage(card.content, `Here is your ${card.content.toLowerCase()}.`);
+          addCardMessage(card.user, `Here is your ${card.user.toLowerCase()}.`);
         });
       } else if (data.related_cards) {
         const relatedCards = data.related_cards;
         relatedCards.forEach((card) => {
-          addCardMessage(card.content, `Related card: ${card.content}`);
+          addCardMessage(card.user, `Related card: ${card.user}`);
         });
       }
     } catch (error) {
