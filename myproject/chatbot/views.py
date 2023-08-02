@@ -10,7 +10,6 @@ import random
 def chatbot_view(request):
     return render(request, 'chatbot/index.html')
 
-
 # Function to load cards data from cards.json
 def load_cards_data():
     cards_json_path = os.path.join(os.path.dirname(__file__), 'static/chatbot/json/cards.json')
@@ -38,21 +37,9 @@ def get_related_cards(cards_data, option):
 
     return related_entries
 
-# def get_bot_reply(request):
-#     user_input = request.GET.get('user_input', '').strip()
-
-#     if user_input:
-#         return JsonResponse({'bot_reply': user_input})
-#     else:
-#         return JsonResponse({'bot_reply': "I'm sorry, but I don't have the information you're looking for."})
-
 def get_bot_reply(request):
     if request.method == 'GET':
         user_input = request.GET.get('user_input', '').strip()
-    # elif request.method == 'POST':
-    #     user_input = request.POST.get('user_input', '').strip()
-    # else:
-    #     user_input = ''
     
     bot_replies = [
         "I apologize, but I don't have the information you're looking for.",
@@ -62,19 +49,23 @@ def get_bot_reply(request):
 
     bot_reply = random.choice(bot_replies)
 
-    cards_data = load_cards_data()  # Assuming you have a function to load cards_data
-    card_content = [card['content'] for card in cards_data['Card']]
+    cards_data = load_cards_data()
+    card_contents = [card['content'] for card in cards_data['Card']]
 
     if bot_reply == "I'm sorry, I'm unable to understand. Please select from the given options.":
         parent_data = get_parent_data(cards_data)
         return JsonResponse({'bot_reply': bot_reply, 'parent_data': parent_data, 'user_input': user_input})
-    elif user_input in card_content:
-        cards_data = load_cards_data()
-        for card in cards_data:
+    elif user_input in card_contents:
+        card_option = None
+        for card in cards_data['Card']:
             if user_input == card['content']:
                 card_option = card['Option']
-                related_cards = get_related_cards(cards_data, card_option)
-                return JsonResponse({'bot_reply': bot_reply, 'related_cards': related_cards, 'user_input': user_input})
+                break
+
+        if card_option is not None:
+            related_cards = get_related_cards(cards_data, card_option)
+            return JsonResponse({'bot_reply': bot_reply, 'related_cards': related_cards, 'user_input': user_input})
     else:
         return JsonResponse({'bot_reply': bot_reply, 'user_input': user_input})
+
 

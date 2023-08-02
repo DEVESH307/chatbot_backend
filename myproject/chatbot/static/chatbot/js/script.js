@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let isMessageBeingSent = false;
   let disabledCards = [];
   loader.hidden = true;
+  let clickedCardMessage = '';
+
 
   // Utility functions
 
@@ -216,6 +218,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const userAvatarElement = createDOMElement("div", ["avatar", "user-avatar"]);
       clickedMessage.appendChild(userAvatarElement);
+      
+      clickedCardMessage = clickedMessage.querySelector('.text-wrapper').textContent;
+      console.log('Clicked Card Message (active):', clickedCardMessage); // Log the value when the card is active
 
       scrollToBottom(); // Scroll to bottom before bot response
 
@@ -272,6 +277,10 @@ document.addEventListener("DOMContentLoaded", function () {
       if (index !== -1) {
         disabledCards.splice(index, 1);
       }
+
+      clickedMessage = '';
+      console.log('Clicked Card Message (not active):', clickedCardMessage); // Log the value when the card is not active
+
     }
 
     scrollToBottom(); // Scroll to bottom after bot response (if any)
@@ -317,40 +326,83 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to send a message
+  // async function sendMessage() {
+  //   if (isMessageBeingSent) return;
+
+  //   isMessageBeingSent = true;
+  //   userInput.removeEventListener("keypress", handleKeyPress);
+  //   sendBtn.disabled = true;
+  //   const message = userInput.value.trim();
+
+  //   if (message !== "") {
+  //     addMessage(message, true);
+  //     userInput.value = "";
+  //     userInput.style.height = originalHeight;
+  //     showLoader();
+  //     scrollToBottom();
+
+  //     const botReply = await generateBotReply(message);
+  //     if (botReply) {
+  //       addMessage(botReply, false);
+  //       if (botReply.includes("I'm sorry, I'm unable to understand. Please select from the given options.")) {
+  //         showCardOptions(); // Show card options only when the bot response contains the trigger text
+  //       }
+  //       hideLoader();
+  //     }
+
+  //     scrollToBottom();
+  //   } else {
+  //     userInput.placeholder = placeholder;
+  //   }
+
+  //   sendBtn.disabled = userInput.value.trim() === "" || isMessageBeingSent || loader.hidden === false;
+  //   userInput.addEventListener("keypress", handleKeyPress);
+  //   isMessageBeingSent = false;
+  // }
+  
   async function sendMessage() {
     if (isMessageBeingSent) return;
-
+  
     isMessageBeingSent = true;
-    userInput.removeEventListener("keypress", handleKeyPress);
+    userInput.removeEventListener('keypress', handleKeyPress);
     sendBtn.disabled = true;
     const message = userInput.value.trim();
-
-    if (message !== "") {
-      addMessage(message, true);
-      userInput.value = "";
+  
+    // Check if there is an active card (clickedCardMessage has priority)
+    const userMessage = clickedCardMessage !== '' ? clickedCardMessage : message;
+  
+    if (userMessage !== '') {
+      addMessage(userMessage, true);
+      userInput.value = '';
       userInput.style.height = originalHeight;
       showLoader();
       scrollToBottom();
-
-      const botReply = await generateBotReply(message);
+  
+      const botReply = await generateBotReply(userMessage);
       if (botReply) {
         addMessage(botReply, false);
         if (botReply.includes("I'm sorry, I'm unable to understand. Please select from the given options.")) {
-          showCardOptions(); // Show card options only when the bot response contains the trigger text
+          showCardOptions(userMessage); // Pass the userMessage as input to showCardOptions
         }
         hideLoader();
       }
-
+  
       scrollToBottom();
     } else {
       userInput.placeholder = placeholder;
+      // Handle the case when there is no user input or clickedCardMessage
+      // For example, you can show an error message or handle it in a specific way
     }
-
-    sendBtn.disabled = userInput.value.trim() === "" || isMessageBeingSent || loader.hidden === false;
-    userInput.addEventListener("keypress", handleKeyPress);
+  
+    sendBtn.disabled =
+      userInput.value.trim() === '' ||
+      isMessageBeingSent ||
+      chatLog.getElementsByClassName('active-card').length > 0 ||
+      loader.hidden === false;
+    userInput.addEventListener('keypress', handleKeyPress);
     isMessageBeingSent = false;
   }
-
+  
   // Function to initialize event listeners
   function initEventListeners() {
     sendBtn.addEventListener("click", sendMessage);
@@ -374,5 +426,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   // Initialize the chat
   initializeChat();
-  
+  console.log('Clicked Card Message:', clickedCardMessage);
 });
