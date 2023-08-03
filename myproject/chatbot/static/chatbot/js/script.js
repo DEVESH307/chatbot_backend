@@ -142,9 +142,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function showCardOptions(userInput) {
     try {
-      // const data = await generateBotReply(userInput);
-      const response = await fetch(`/chatbot/bot-reply/?user_input=${encodeURIComponent(userInput)}`);
-      const data = await response.json();
+      const data = await generateBotReply(userInput);
+      // const response = await fetch(`/chatbot/bot-reply/?user_input=${encodeURIComponent(userInput)}`);
+      // const data = await response.json();
   
       // if (data.bot_reply === "I'm sorry, I'm unable to understand. Please select from the given options.") {
       if (data.parent_data) {
@@ -157,6 +157,9 @@ document.addEventListener("DOMContentLoaded", function () {
         relatedCards.forEach((card) => {
           addCardMessage(card.user, `Related card: ${card.user}`);
         });
+      }
+      else{
+        addCardMessage(data, `Related card: ${data}`);
       }
     } catch (error) {
       console.error("Error showing card options:", error);
