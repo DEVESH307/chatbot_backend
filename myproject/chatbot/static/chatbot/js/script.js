@@ -140,9 +140,10 @@ document.addEventListener("DOMContentLoaded", function () {
     chatLog.appendChild(messageElement);
   }
 
-  async function showCardOptions(userInput) {
+  // Function to Show Card Options
+  async function showCardOptions(data) {
     try {
-      const data = await generateBotReply(userInput);
+      // const data = await generateBotReply(userInput);
       // const response = await fetch(`/chatbot/bot-reply/?user_input=${encodeURIComponent(userInput)}`);
       // const data = await response.json();
   
@@ -157,9 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
         relatedCards.forEach((card) => {
           addCardMessage(card.user, `Related card: ${card.user}`);
         });
-      }
-      else{
-        addCardMessage(data, `Related card: ${data}`);
       }
     } catch (error) {
       console.error("Error showing card options:", error);
@@ -181,114 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chatLog.appendChild(messageElement);
   }
 
-  // Function to handle card click
-  // async function handleCardClick(botReply, clickedMessage) {
-  //   if (disabledCards.includes(clickedMessage)) {
-  //     return;
-  //   }
-
-  //   const cardMessages = Array.from(chatLog.getElementsByClassName("message"));
-  //   const isActiveCard = clickedMessage.classList.toggle("active-card");
-
-  //   if (isActiveCard) {
-  //     // Hide other card messages
-  //     cardMessages.forEach((message) => {
-  //       if (message !== clickedMessage && message.classList.contains("card-message")) {
-  //         message.style.display = "none";
-  //       }
-  //     });
-
-  //     // Move the clicked card to the bottom
-  //     chatLog.appendChild(clickedMessage);
-
-  //     // Disable click event on all card messages
-  //     cardMessages.forEach((message) => {
-  //       message.style.pointerEvents = "none";
-  //     });
-
-  //     clickedMessage.classList.remove("bot-message", "card-message");
-  //     clickedMessage.classList.add("user-message"); // Apply "user-message" class to the clicked card
-
-  //     const userTimestampElement = createDOMElement("div", ["timestamp", "user-timestamp"]);
-  //     const timestamp = formatTimestamp(new Date());
-  //     userTimestampElement.innerText = timestamp;
-  //     clickedMessage.appendChild(userTimestampElement);
-
-  //     const userAvatarElement = createDOMElement("div", ["avatar", "user-avatar"]);
-  //     clickedMessage.appendChild(userAvatarElement);
-      
-  //     clickedCardMessage = clickedMessage.querySelector('.text-wrapper').textContent;
-  //     // console.log('Clicked Card Message (active):', clickedCardMessage); // Log the value when the card is active
-
-  //     scrollToBottom(); // Scroll to bottom before bot response
-
-  //     showLoader(); // Show the loader while waiting for the bot response
-
-  //     // Add bot reply just below the card message after a time gap of 1 second
-  //     if (botReply) {
-  //       const botReplyMessage = createDOMElement("div", ["message", "bot-message"]);
-  //       const botAvatarElement = createDOMElement("div", ["avatar", "bot-avatar"]);
-  //       botReplyMessage.appendChild(botAvatarElement);
-
-  //       const botTextElement = createDOMElement("div", ["text-wrapper"]);
-  //       botTextElement.innerHTML = botReply;
-  //       botReplyMessage.appendChild(botTextElement);
-
-  //       const botTimestampElement = createDOMElement("div", ["timestamp", "bot-timestamp"]);
-  //       const botTimestamp = formatTimestamp(new Date());
-  //       botTimestampElement.innerText = botTimestamp;
-  //       botReplyMessage.appendChild(botTimestampElement);
-
-  //       // Wait for a time gap of 1 second before appending the bot reply
-  //       await new Promise((resolve) => setTimeout(resolve, 1000));
-  //       chatLog.appendChild(botReplyMessage);
-  //     }
-
-  //     hideLoader(); // Hide the loader after bot response
-
-  //     disabledCards.push(clickedMessage);
-  //   } else {
-  //     // Show all card messages again
-  //     cardMessages.forEach((message) => {
-  //       if (message.classList.contains("card-message")) {
-  //         message.style.display = "block";
-  //       }
-  //     });
-
-  //     clickedMessage.classList.remove("user-message"); // Remove "user-message" class when the card is deselected
-  //     clickedMessage.classList.add("bot-message", "card-message");
-
-  //     clickedMessage.removeChild(clickedMessage.lastChild);
-  //     // Move the bot reply to the bottom
-  //     const botReplyMessage = clickedMessage.nextSibling;
-  //     if (botReplyMessage) {
-  //       chatLog.removeChild(botReplyMessage);
-  //     }
-
-  //     // Re-enable click event on all card messages
-  //     cardMessages.forEach((message) => {
-  //       message.style.pointerEvents = "auto";
-  //     });
-
-  //     // Remove the clicked message from the disabled cards list
-  //     const index = disabledCards.indexOf(clickedMessage);
-  //     if (index !== -1) {
-  //       disabledCards.splice(index, 1);
-  //     }
-
-  //     clickedCardMessage = '';
-  //     // console.log('Clicked Card Message (not active):', clickedCardMessage); // Log the value when the card is not active
-
-  //   }
-
-  //   scrollToBottom(); // Scroll to bottom after bot response (if any)
-  //   sendBtn.disabled =
-  //     userInput.value.trim() === "" ||
-  //     isMessageBeingSent ||
-  //     chatLog.getElementsByClassName("active-card").length > 0 ||
-  //     loader.hidden === false;
-  // }
-
+  
   // Function to handle card click
   async function handleCardClick(botReply, clickedMessage) {
     if (disabledCards.includes(clickedMessage)) {
@@ -324,25 +215,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const userAvatarElement = createDOMElement("div", ["avatar", "user-avatar"]);
       clickedMessage.appendChild(userAvatarElement);
-
+      
       clickedCardMessage = clickedMessage.querySelector('.text-wrapper').textContent;
       // console.log('Clicked Card Message (active):', clickedCardMessage); // Log the value when the card is active
 
       scrollToBottom(); // Scroll to bottom before bot response
 
       showLoader(); // Show the loader while waiting for the bot response
+      // Call sendMessage here after handling the card click
+      // await sendMessage();
 
-      // Call generateBotReply function with the clicked card message as userInput
-      const botReply = await generateBotReply(clickedCardMessage);
+      // Add bot reply just below the card message after a time gap of 1 second
       if (botReply) {
-        addMessage(botReply, false);
-        if (botReply.includes("I'm sorry, I'm unable to understand. Please select from the given options.")) {
-          showCardOptions(clickedCardMessage); // Pass the clickedCardMessage as input to showCardOptions
-        }
-        hideLoader();
-      }
+        const botReplyMessage = createDOMElement("div", ["message", "bot-message"]);
+        const botAvatarElement = createDOMElement("div", ["avatar", "bot-avatar"]);
+        botReplyMessage.appendChild(botAvatarElement);
 
-      scrollToBottom();
+        const botTextElement = createDOMElement("div", ["text-wrapper"]);
+        botTextElement.innerHTML = botReply;
+        botReplyMessage.appendChild(botTextElement);
+
+        const botTimestampElement = createDOMElement("div", ["timestamp", "bot-timestamp"]);
+        const botTimestamp = formatTimestamp(new Date());
+        botTimestampElement.innerText = botTimestamp;
+        botReplyMessage.appendChild(botTimestampElement);
+
+        // Wait for a time gap of 1 second before appending the bot reply
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        chatLog.appendChild(botReplyMessage);
+      }
+      await sendMessage();
+
+      hideLoader(); // Hide the loader after bot response
+
       disabledCards.push(clickedMessage);
     } else {
       // Show all card messages again
@@ -375,6 +280,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       clickedCardMessage = '';
       // console.log('Clicked Card Message (not active):', clickedCardMessage); // Log the value when the card is not active
+
     }
 
     scrollToBottom(); // Scroll to bottom after bot response (if any)
@@ -384,6 +290,103 @@ document.addEventListener("DOMContentLoaded", function () {
       chatLog.getElementsByClassName("active-card").length > 0 ||
       loader.hidden === false;
   }
+  
+  // Function to handle card click
+  // async function handleCardClick(botReply, clickedMessage) {
+  //   if (disabledCards.includes(clickedMessage)) {
+  //     return;
+  //   }
+
+  //   const cardMessages = Array.from(chatLog.getElementsByClassName("message"));
+  //   const isActiveCard = clickedMessage.classList.toggle("active-card");
+
+  //   if (isActiveCard) {
+  //     // Hide other card messages
+  //     cardMessages.forEach((message) => {
+  //       if (message !== clickedMessage && message.classList.contains("card-message")) {
+  //         message.style.display = "none";
+  //       }
+  //     });
+
+  //     // Move the clicked card to the bottom
+  //     chatLog.appendChild(clickedMessage);
+
+  //     // Disable click event on all card messages
+  //     cardMessages.forEach((message) => {
+  //       message.style.pointerEvents = "none";
+  //     });
+
+  //     clickedMessage.classList.remove("bot-message", "card-message");
+  //     clickedMessage.classList.add("user-message"); // Apply "user-message" class to the clicked card
+
+  //     const userTimestampElement = createDOMElement("div", ["timestamp", "user-timestamp"]);
+  //     const timestamp = formatTimestamp(new Date());
+  //     userTimestampElement.innerText = timestamp;
+  //     clickedMessage.appendChild(userTimestampElement);
+
+  //     const userAvatarElement = createDOMElement("div", ["avatar", "user-avatar"]);
+  //     clickedMessage.appendChild(userAvatarElement);
+
+  //     clickedCardMessage = clickedMessage.querySelector('.text-wrapper').textContent;
+  //     // console.log('Clicked Card Message (active):', clickedCardMessage); // Log the value when the card is active
+
+  //     scrollToBottom(); // Scroll to bottom before bot response
+
+  //     showLoader(); // Show the loader while waiting for the bot response
+
+  //     // Call generateBotReply function with the clicked card message as userInput
+  //     const botReplyData = await generateBotReply(clickedCardMessage);
+  //     const botReply = botReplyData.bot_reply;
+  //     if (botReply) {
+  //       addMessage(botReply, false);
+  //       if (botReply.includes("I'm sorry, I'm unable to understand. Please select from the given options.")) {
+  //         showCardOptions(clickedCardMessage); // Pass the clickedCardMessage as input to showCardOptions
+  //       }
+  //       hideLoader();
+  //     }
+
+  //     scrollToBottom();
+  //     disabledCards.push(clickedMessage);
+  //   } else {
+  //     // Show all card messages again
+  //     cardMessages.forEach((message) => {
+  //       if (message.classList.contains("card-message")) {
+  //         message.style.display = "block";
+  //       }
+  //     });
+
+  //     clickedMessage.classList.remove("user-message"); // Remove "user-message" class when the card is deselected
+  //     clickedMessage.classList.add("bot-message", "card-message");
+
+  //     clickedMessage.removeChild(clickedMessage.lastChild);
+  //     // Move the bot reply to the bottom
+  //     const botReplyMessage = clickedMessage.nextSibling;
+  //     if (botReplyMessage) {
+  //       chatLog.removeChild(botReplyMessage);
+  //     }
+
+  //     // Re-enable click event on all card messages
+  //     cardMessages.forEach((message) => {
+  //       message.style.pointerEvents = "auto";
+  //     });
+
+  //     // Remove the clicked message from the disabled cards list
+  //     const index = disabledCards.indexOf(clickedMessage);
+  //     if (index !== -1) {
+  //       disabledCards.splice(index, 1);
+  //     }
+
+  //     clickedCardMessage = '';
+  //     // console.log('Clicked Card Message (not active):', clickedCardMessage); // Log the value when the card is not active
+  //   }
+
+  //   scrollToBottom(); // Scroll to bottom after bot response (if any)
+  //   sendBtn.disabled =
+  //     userInput.value.trim() === "" ||
+  //     isMessageBeingSent ||
+  //     chatLog.getElementsByClassName("active-card").length > 0 ||
+  //     loader.hidden === false;
+  // }
 
 
   // Function to add a message to the chat log
@@ -413,7 +416,8 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      return data.bot_reply;
+      // return data.bot_reply;
+      return data;
     } catch (error) {
       console.error("Error fetching bot reply:", error);
       return "Error fetching bot reply.";
@@ -444,11 +448,15 @@ document.addEventListener("DOMContentLoaded", function () {
       showLoader();
       scrollToBottom();
 
-      const botReply = await generateBotReply(userMessage);
+      const botReplyData = await generateBotReply(userMessage);
+      const botReply = botReplyData.bot_reply;
       if (botReply) {
-        addMessage(botReply, false);
+        // addMessage(botReply, false);
         if (botReply.includes("I'm sorry, I'm unable to understand. Please select from the given options.")) {
-          showCardOptions(userMessage); // Pass the userMessage as input to showCardOptions
+          showCardOptions(botReplyData); // Pass the userMessage as input to showCardOptions
+        }
+        else{
+          addMessage(botReply, false);
         }
         hideLoader();
       }
@@ -492,5 +500,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   // Initialize the chat
   initializeChat();
-  console.log('Clicked Card Message:', clickedCardMessage);
+  // console.log('Clicked Card Message:', clickedCardMessage);
 });
