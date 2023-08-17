@@ -179,7 +179,6 @@ document.addEventListener("DOMContentLoaded", function () {
     chatLog.appendChild(messageElement);
   }
 
-  
   // Function to handle card click
   async function handleCardClick(botReply, clickedMessage) {
     if (disabledCards.includes(clickedMessage)) {
@@ -388,7 +387,6 @@ document.addEventListener("DOMContentLoaded", function () {
   //     loader.hidden === false;
   // }
 
-
   // Function to add a message to the chat log
   function addMessage(message, isUser) {
     const messageElement = createDOMElement("div", ["message", isUser ? "user-message" : "bot-message"]);
@@ -425,6 +423,59 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   
   // Function to send a message
+  // async function sendMessage() {
+  //   if (isMessageBeingSent) return;
+
+  //   isMessageBeingSent = true;
+  //   userInput.removeEventListener("keypress", handleKeyPress);
+  //   sendBtn.disabled = true;
+  //   const message = userInput.value.trim();
+
+  //   // Reset the clickedCardMessage when sending a new text message
+  //   if (message !== '') {
+  //     clickedCardMessage = '';
+  //   }
+
+  //   // Check if there is an active card (clickedCardMessage has priority)
+  //   const userMessage = clickedCardMessage !== '' ? clickedCardMessage : message;
+
+  //   if (userMessage !== '') {
+  //     addMessage(userMessage, true);
+  //     userInput.value = '';
+  //     userInput.style.height = originalHeight;
+  //     showLoader();
+  //     scrollToBottom();
+
+  //     const botReplyData = await generateBotReply(userMessage);
+  //     const botReply = botReplyData.bot_reply;
+  //     if (botReply) {
+  //       // addMessage(botReply, false);
+  //       if (botReply.includes("I'm sorry, I'm unable to understand. Please select from the given options.")) {
+  //         showCardOptions(botReplyData); // Pass the userMessage as input to showCardOptions
+  //       }
+  //       else{
+  //         addMessage(botReply, false);
+  //       }
+  //       hideLoader();
+  //     }
+
+  //     scrollToBottom();
+  //   } else {
+  //     userInput.placeholder = placeholder;
+  //     // Handle the case when there is no user input or clickedCardMessage
+  //     // For example, you can show an error message or handle it in a specific way
+  //   }
+
+  //   sendBtn.disabled =
+  //     userInput.value.trim() === '' ||
+  //     isMessageBeingSent ||
+  //     chatLog.getElementsByClassName('active-card').length > 0 ||
+  //     loader.hidden === false;
+  //   userInput.addEventListener('keypress', handleKeyPress);
+  //   isMessageBeingSent = false;
+  // }
+
+  // Function to send a message
   async function sendMessage() {
     if (isMessageBeingSent) return;
 
@@ -439,10 +490,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Check if there is an active card (clickedCardMessage has priority)
-    const userMessage = clickedCardMessage !== '' ? clickedCardMessage : message;
+    const userMessage = clickedCardMessage || message;
 
-    if (userMessage !== '') {
-      addMessage(userMessage, true);
+    if (userMessage) {
+      // addMessage(userMessage, true);
+      if (clickedCardMessage === '') {
+        addMessage(userMessage, true);
+      }
       userInput.value = '';
       userInput.style.height = originalHeight;
       showLoader();
@@ -450,17 +504,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const botReplyData = await generateBotReply(userMessage);
       const botReply = botReplyData.bot_reply;
-      if (botReply) {
-        // addMessage(botReply, false);
-        if (botReply.includes("I'm sorry, I'm unable to understand. Please select from the given options.")) {
-          showCardOptions(botReplyData); // Pass the userMessage as input to showCardOptions
-        }
-        else{
-          addMessage(botReply, false);
-        }
-        hideLoader();
+      if (botReplyData.parent_data || botReplyData.related_cards) {
+        showCardOptions(botReplyData); // Pass the userMessage as input to showCardOptions
+      } else {
+        addMessage(botReply, false);
       }
 
+      hideLoader();
       scrollToBottom();
     } else {
       userInput.placeholder = placeholder;
