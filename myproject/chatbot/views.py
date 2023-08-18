@@ -123,7 +123,11 @@ def get_bot_reply(request):
         bot_reply = related_card['chatbot']
         related_options = related_card['related_options']
         related_cards = get_related_cards(cards_data, related_card['id'])
-        return JsonResponse({'bot_reply': bot_reply, 'related_cards': related_cards, 'user_input': user_input})
+        # return JsonResponse({'bot_reply': bot_reply, 'related_cards': related_cards, 'user_input': user_input})
+        if related_card['wait_for_user_input']:
+            return JsonResponse({'bot_reply': bot_reply, 'related_cards': related_cards, 'user_input': user_input, 'wait_for_user_input': True})
+        else:
+            return JsonResponse({'bot_reply': bot_reply, 'related_cards': related_cards, 'user_input': user_input})
 
     bot_replies = [
         "I apologize, but I don't have the information you're looking for.",

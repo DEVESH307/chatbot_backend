@@ -141,16 +141,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to Show Card Options
-  async function showCardOptions(data) {
+  async function showCardOptions(botReplyData) {
     try {
-      if (data.parent_data) {
-        const parentCards = data.parent_data;
+      if (botReplyData.parent_data) {
+        const parentCards = botReplyData.parent_data;
         parentCards.forEach((card) => {
           // addCardMessage(card.user, `Here is your ${card.user.toLowerCase()}.`);
           addCardMessage(card.user, card.chatbot);
         });
-      } else if (data.related_cards) {
-        const relatedCards = data.related_cards;
+      } else if (botReplyData.related_cards) {
+        const relatedCards = botReplyData.related_cards;
         relatedCards.forEach((card) => {
           // addCardMessage(card.user, `Related card: ${card.user}`);
           addCardMessage(card.user, card.chatbot);
