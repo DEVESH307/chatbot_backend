@@ -202,6 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       clickedMessage.classList.remove("bot-message", "card-message");
+      clickedMessage.classList.add("user-message", "enter-from-left"); // Add "enter-from-left" class
       clickedMessage.classList.add("user-message"); // Apply "user-message" class to the clicked card
 
       const userTimestampElement = createDOMElement("div", ["timestamp", "user-timestamp"]);

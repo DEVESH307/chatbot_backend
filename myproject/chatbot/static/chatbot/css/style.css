@@ -456,3 +456,21 @@
     transform: scale(0);
   }
 }
+
+/* Add this to your CSS file */
+.enter-from-left {
+  animation: enterFromLeftAnimation 0.25s cubic-bezier(0.42, 0, 0.58, 1);
+  white-space: normal; /* Allow line breaks if the text is too long */
+  overflow: hidden; /* Add this line to prevent text overflow */
+}
+
+@keyframes enterFromLeftAnimation {
+  from {
+    transform: translateX(-5%);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
