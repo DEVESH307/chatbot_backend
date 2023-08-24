@@ -306,9 +306,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     chatLog.appendChild(messageElement);
   }
-
-  // Function to generate bot reply
-  async function generateBotReply(userInput) {
+  
+  // Function to generate bot reply GET request
+  async function generateBotReplyGet(userInput) {
     try {
       const response = await fetch(`/chatbot/bot-reply/?user_input=${encodeURIComponent(userInput)}`);
       if (!response.ok) {
@@ -322,6 +322,84 @@ document.addEventListener("DOMContentLoaded", function () {
       return "Error fetching bot reply.";
     }
   }
+
+  // Function to generate bot reply for POST request
+  async function generateBotReplyPost(userInput) {
+    try {
+      const response = await fetch('/chatbot/bot-reply/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // Modify the content type if needed
+        },
+        body: `user_input=${encodeURIComponent(userInput)}`,
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      return data; // Assuming data contains the bot reply
+    } catch (error) {
+      console.error('Error fetching bot reply:', error);
+      return 'Error fetching bot reply.';
+    }
+  }
+
+  // Function to send a message
+  // async function sendMessage() {
+  //   if (isMessageBeingSent) return;
+
+  //   isMessageBeingSent = true;
+  //   userInput.removeEventListener("keypress", handleKeyPress);
+  //   sendBtn.disabled = true;
+  //   const message = userInput.value.trim();
+
+  //   // Reset the clickedCardMessage when sending a new text message
+  //   if (message !== '') {
+  //     clickedCardMessage = '';
+  //   }
+
+  //   // Check if there is an active card (clickedCardMessage has priority)
+  //   const userMessage = clickedCardMessage || message;
+
+  //   if (userMessage) {
+  //     // addMessage(userMessage, true);
+  //     if (clickedCardMessage === '') {
+  //       addMessage(userMessage, true);
+  //     }
+  //     userInput.value = '';
+  //     userInput.style.height = originalHeight;
+  //     showLoader();
+  //     scrollToBottom();
+
+  //     const botReplyData = await generateBotReplyGet(userMessage);
+  //     const botReply = botReplyData.bot_reply;
+  //     if (botReplyData.parent_data) {
+  //       addMessage(botReply, false);
+  //       showCardOptions(botReplyData); // Pass the userMessage as input to showCardOptions
+  //     } else if (botReplyData.related_cards) {
+  //       showCardOptions(botReplyData);
+  //     } else {
+  //       addMessage(botReply, false);
+  //     }
+
+  //     hideLoader();
+  //     scrollToBottom();
+  //   } else {
+  //     userInput.placeholder = placeholder;
+  //     // Handle the case when there is no user input or clickedCardMessage
+  //     // For example, you can show an error message or handle it in a specific way
+  //   }
+
+  //   sendBtn.disabled =
+  //     userInput.value.trim() === '' ||
+  //     isMessageBeingSent ||
+  //     chatLog.getElementsByClassName('active-card').length > 0 ||
+  //     loader.hidden === false;
+  //   userInput.addEventListener('keypress', handleKeyPress);
+  //   isMessageBeingSent = false;
+  // }
 
   // Function to send a message
   async function sendMessage() {
@@ -350,16 +428,34 @@ document.addEventListener("DOMContentLoaded", function () {
       showLoader();
       scrollToBottom();
 
-      const botReplyData = await generateBotReply(userMessage);
-      const botReply = botReplyData.bot_reply;
-      if (botReplyData.parent_data) {
+
+      if (userMessage === "Company ID for Payment Status" || userMessage === "Transaction ID for Payment Status") {
+        const botReplyData = await generateBotReplyPost(userMessage);
+        const botReply = botReplyData.bot_reply;
         addMessage(botReply, false);
-        showCardOptions(botReplyData); // Pass the userMessage as input to showCardOptions
-      } else if (botReplyData.related_cards) {
-        showCardOptions(botReplyData);
       } else {
-        addMessage(botReply, false);
+        const botReplyData = await generateBotReplyGet(userMessage);
+        const botReply = botReplyData.bot_reply;
+        
+        if (botReplyData.parent_data) {
+          addMessage(botReply, false);
+          showCardOptions(botReplyData); // Pass the userMessage as input to showCardOptions
+        } else if (botReplyData.related_cards) {
+          showCardOptions(botReplyData);
+        } else {
+          addMessage(botReply, false);
+        }
       }
+
+      // const botReply = botReplyData.bot_reply;
+      // if (botReplyData.parent_data) {
+      //   addMessage(botReply, false);
+      //   showCardOptions(botReplyData); // Pass the userMessage as input to showCardOptions
+      // } else if (botReplyData.related_cards) {
+      //   showCardOptions(botReplyData);
+      // } else {
+      //   addMessage(botReply, false);
+      // }
 
       hideLoader();
       scrollToBottom();
