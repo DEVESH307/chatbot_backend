@@ -53,23 +53,38 @@ def get_parent_data(data, current_card_id):
 
 
 def is_valid_company_id(company_id):
+<<<<<<< HEAD
     if len(company_id) != 10:
+=======
+    if len(company_id) < 10:
+>>>>>>> 9c5726268968af78ba50921d5c927874a464a5a8
         return False, "Company ID should have at least 10 digits."
     return True, None
 
 def is_valid_transaction_id(transaction_id):
+<<<<<<< HEAD
     if len(transaction_id) != 10:
+=======
+    if len(transaction_id) < 10:
+>>>>>>> 9c5726268968af78ba50921d5c927874a464a5a8
         return False, "Transaction ID should have at least 10 digits."
     return True, None
 def paymentStatus(user_input, current_card_id, payment_status_info):
     response_data = {}
+<<<<<<< HEAD
     response_data["current_card_id"] = current_card_id
+=======
+>>>>>>> 9c5726268968af78ba50921d5c927874a464a5a8
 
     if current_card_id == 5 and user_input:
         is_valid_company, company_error_message = is_valid_company_id(user_input)
         response_data["is_valid_company"] = is_valid_company
         if is_valid_company:
             payment_status_info["Company ID"] = user_input
+<<<<<<< HEAD
+=======
+            response_data["current_card_id"] = current_card_id
+>>>>>>> 9c5726268968af78ba50921d5c927874a464a5a8
         else:
             bot_reply = f"Sorry, you have entered an invalid Company ID. {company_error_message}"
             response_data['bot_reply'] = bot_reply
@@ -80,6 +95,10 @@ def paymentStatus(user_input, current_card_id, payment_status_info):
         response_data["is_valid_transaction"] = is_valid_transaction
         if is_valid_transaction:
             payment_status_info["Transaction ID"] = user_input
+<<<<<<< HEAD
+=======
+            response_data["current_card_id"] = current_card_id
+>>>>>>> 9c5726268968af78ba50921d5c927874a464a5a8
         else:
             bot_reply = f"Sorry, you have entered an invalid Transaction ID. {transaction_error_message}"
             response_data['bot_reply'] = bot_reply
@@ -157,7 +176,10 @@ class GetBotReplyAPIView(APIView):
         # Find the current card ID
         current_card_id = find_current_card_id(cards_data, user_input)
         
+<<<<<<< HEAD
         
+=======
+>>>>>>> 9c5726268968af78ba50921d5c927874a464a5a8
         try:
             if current_card_id == 5 or current_card_id == 6:
                 payment_status_response = paymentStatus(user_input, current_card_id, payment_status_info)
